@@ -16,6 +16,7 @@
     --p4:#8f5aa0;     /* main */
     --p4-mid:#b0a4cc; /* mid */
     --p4-soft:#cda7ca;/* soft bg */
+
     /* Hands */
     --minute:#75b7cb; /* keep minute hand BLUE */
     --hour:#f1583f;
@@ -51,20 +52,11 @@
     background:#fff center/contain no-repeat;background-image:var(--face);
     border-radius:50%;margin:16px auto;box-shadow:0 6px 18px rgba(0,0,0,.06);touch-action:none;
   }
-
   .tick{position:absolute;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;}
-  .flash-green{animation:greenflash 900ms ease-in-out 1;}
-  @keyframes greenflash{
-    0%{box-shadow:0 0 0 0 rgba(0,160,0,0);background:transparent;}
-    25%{box-shadow:0 0 0 6px rgba(0,160,0,.15);background:rgba(0,200,0,.08);}
-    55%{box-shadow:0 0 0 10px rgba(0,160,0,.22);background:rgba(0,200,0,.12);}
-    100%{box-shadow:0 0 0 0 rgba(0,160,0,0);background:transparent;}
-  }
 
   .hand{position:absolute;left:50%;top:50%;transform-origin:50% 100%;border-radius:6px;touch-action:none;cursor:grab;z-index:1;}
   .min{  width:6px;height:150px;background:var(--minute);transform:translate(-50%,-100%) rotate(0deg);z-index:2;}
   .hour{ width:8px;height:110px;background:var(--hour); transform:translate(-50%,-100%) rotate(0deg);z-index:3;}
-  .ghost{opacity:.6}
   .pivot{position:absolute;left:50%;top:50%;width:18px;height:18px;background:#fff;border:4px solid var(--hour);border-radius:50%;transform:translate(-50%,-50%);z-index:4;}
 
   .readout{font-size:26px;min-height:32px}
@@ -74,17 +66,21 @@
   .quiz-feedback{min-height:32px;font-size:24px;text-align:center;margin-top:8px;}
 
   /* Schreif UI */
-  .choiceCol{display:flex;flex-direction:column;gap:10px;width:min(520px,90vw);margin:0 auto}
-  .choice{border:3px solid var(--p4);border-radius:14px;padding:10px 14px;font-size:24px;background:#fff;cursor:pointer}
-  .choice.top{border-bottom-left-radius:6px;border-bottom-right-radius:6px}
-  .choice.bottom{border-top-left-radius:6px;border-top-right-radius:6px}
-  .choice.active{background:var(--p4-mid)}
-  .answerbox{min-height:44px;border:3px dashed var(--p4-mid);border-radius:12px;padding:10px 14px;font-size:26px;margin-top:8px;background:#fff}
-  .letters{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px auto 0;max-width:780px}
-  .lbox{width:34px;height:44px;border:3px solid var(--p4-mid);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#fff}
   .toggle{display:inline-flex;border:3px solid var(--p4);border-radius:999px;overflow:hidden;font-family:'Schoulschrëft',Arial,sans-serif}
   .toggle button{border:0;padding:8px 14px;font-size:20px;cursor:pointer;background:#fff;font-family:'Schoulschrëft',Arial,sans-serif}
   .toggle .on{background:var(--p4-mid)}
+
+  .sentence{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:10px}
+  .etass{font-size:26px}
+
+  .choiceRow{display:flex;gap:10px}
+  .pill{border:3px solid var(--p4);border-radius:14px;padding:10px 14px;font-size:22px;background:#fff;cursor:pointer;font-family:'Schoulschrëft',Arial,sans-serif}
+  .pill.active{background:var(--p4-mid)}
+
+  .letters{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .lbox{width:34px;height:44px;border:3px solid var(--p4-mid);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#fff}
+
+  .answerbox{min-height:44px;min-width:180px;border:3px dashed var(--p4-mid);border-radius:12px;padding:10px 14px;font-size:26px;background:#fff}
 
   /* QWERTZ keyboard */
   .kbd{display:grid;gap:8px;max-width:860px;margin:12px auto 0;
@@ -128,7 +124,7 @@
   </div>
 </section>
 
-<!-- 1. Spill – Lauschteren (autoplay + replay) -->
+<!-- 1. Spill – Lauschteren -->
 <section id="lauschteren" class="section">
   <div class="center">
     <div class="chip">Wéi vill Auer ass et? Lauschteren!</div>
@@ -145,7 +141,7 @@
   </div>
 </section>
 
-<!-- 2. Spill – Quiz -->
+<!-- 2. Spill – Quiz (same as before; omitted here for brevity in comments; code still included) -->
 <section id="quiz" class="section">
   <div class="center">
     <div class="chip">Wéi vill Auer ass et? Quiz!</div>
@@ -174,18 +170,23 @@
       </span>
     </div>
   </div>
+
   <div class="clock-wrap mt16">
     <div id="c4" class="clock"></div>
 
-    <div class="center" style="font-size:24px;margin-top:6px">Et ass</div>
+    <!-- Sentence row -->
+    <div class="sentence">
+      <div class="etass">Et ass</div>
 
-    <div class="choiceCol mt8">
-      <button class="choice top" id="chVir">Véierel vir</button>
-      <button class="choice bottom" id="chOp">Véierel op</button>
+      <div class="choiceRow">
+        <button class="pill" id="chVir">Véierel vir</button>
+        <button class="pill" id="chOp">Véierel op</button>
+      </div>
+
+      <!-- Right part changes by level -->
+      <div id="lettersWrap" class="letters"></div>
+      <div id="oneBox" class="answerbox" style="display:none"></div>
     </div>
-
-    <div id="lettersWrap" class="letters"></div>
-    <div id="oneBox" class="answerbox" style="display:none"></div>
 
     <div class="row mt12">
       <button class="btn" id="wCheck">Iwwerpréiwen</button>
@@ -284,9 +285,7 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
 (function(){
   const RAW_P3 = "https://github.com/albrechtclaire1007/p3auer/raw/refs/heads/main/";
   const RAW_P4 = "https://github.com/albrechtclaire1007/p4auer/raw/refs/heads/main/";
-
   const items = [
-    // Voll (reused)
     { h:10, m:0,  audio: RAW_P3 + "10%20AUER.mp3" },
     { h:9,  m:0,  audio: RAW_P3 + "9%20AUER.mp3"  },
     { h:8,  m:0,  audio: RAW_P3 + "8%20AUER.mp3"  },
@@ -295,7 +294,6 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     { h:3,  m:0,  audio: RAW_P3 + "3%20AUER.mp3"  },
     { h:12, m:0,  audio: RAW_P3 + "12%20AUER.mp3" },
     { h:1,  m:0,  audio: RAW_P3 + "1%20AUER.mp3"  },
-    // Hallef (reused)
     { h:2,  m:30, audio: RAW_P3 + "230.mp3"  },
     { h:4,  m:30, audio: RAW_P3 + "430.mp3"  },
     { h:6,  m:30, audio: RAW_P3 + "630.mp3"  },
@@ -303,7 +301,6 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     { h:8,  m:30, audio: RAW_P3 + "830.mp3"  },
     { h:9,  m:30, audio: RAW_P3 + "930.mp3"  },
     { h:11, m:30, audio: RAW_P3 + "1130.mp3" },
-    // NEW quarters
     { h:10, m:15, audio: RAW_P4 + "1015.mp3" },
     { h:12, m:15, audio: RAW_P4 + "1215.mp3" },
     { h:8,  m:15, audio: RAW_P4 + "815.mp3"  },
@@ -313,7 +310,6 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     { h:9,  m:45, audio: RAW_P4 + "945.mp3"  },
     { h:11, m:45, audio: RAW_P4 + "1145.mp3" },
   ];
-
   function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
   shuffle(items);
   let idx=0;
@@ -391,17 +387,13 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   load(idx);
 })();
 
-/* ---------- 2) Quiz (quarters with realistic mistakes) ---------- */
+/* ---------- 2) Quiz (quarters + existing) ---------- */
 (function(){
-  // helper to set clock
   function setClock(h,m){
     setHand(min, m*6);
     setHand(hour, (h%12)*30 + m*0.5);
   }
-
-  // 10 NEW quarter questions
   const newQ = [
-    // time shown -> options [correct, typical confusion same hour other direction, confusion with previous/next hour], some lowercase "véierel"
     { h:3,  m:45, opts:["Et ass Véierel vir véier","Et ass Véierel op véier","Et ass Véierel vir dräi"], correct:0 },
     { h:10, m:15, opts:["Et ass Véierel op zéng","Et ass véierel vir zéng","Et ass Véierel op néng"], correct:0 },
     { h:8,  m:45, opts:["Et ass Véierel vir aacht","Et ass Véierel op aacht","Et ass véierel vir siwen"], correct:0 },
@@ -413,8 +405,6 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     { h:11, m:45, opts:["Et ass Véierel vir zwielef","Et ass Véierel op zwielef","Et ass véierel vir eelef"], correct:0 },
     { h:7,  m:15, opts:["Et ass Véierel op aacht","Et ass véierel vir aacht","Et ass Véierel op siwen"], correct:0 },
   ];
-
-  // Existing 10 (5 full + 5 half) from P3 set
   const oldQ = [
     { h:12, m:0,  opts:["Et ass zwielef.","Et ass zwielef Auer","Et ass Auer zwielef."], correct:1 },
     { h:10, m:0,  opts:["Et ass zéng Auer.","Et ass Auer zéng.","Et ass zéng."], correct:0 },
@@ -427,10 +417,7 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     { h:5,  m:30, opts:["Et ass hallwer sechs.","Et ass fënnef hallwer.","Et ass hallwer op fënnef."], correct:0 },
     { h:6,  m:30, opts:["Et ass hallwer siwen.","Et ass hallwer sechs.","Et ass hallwer aacht."], correct:0 },
   ];
-
   const quizData = [...newQ, ...oldQ];
-
-  // randomized order
   let order=[...quizData.keys()]; for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
   let qIndex = 0;
 
@@ -490,9 +477,8 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   renderQuestion(qIndex);
 })();
 
-/* ---------- 3) Schreif (QWERTZ keyboard, two levels) ---------- */
+/* ---------- 3) Schreif (side-by-side + true CAPS toggle) ---------- */
 (function(){
-  // Prompts (quarter to/past)
   const prompts = [
     {h:3,  m:45, type:'vir', hour:'véier'},
     {h:10, m:15, type:'op',  hour:'zéng'},
@@ -510,10 +496,10 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
 
   const root=document.getElementById('c4');
   placeTicks(root);
-  const hour=document.createElement('div'); hour.className='hand hour';
-  const min =document.createElement('div'); min.className='hand min';
+  const hourH=document.createElement('div'); hourH.className='hand hour';
+  const minH =document.createElement('div'); minH.className='hand min';
   const pivot=document.createElement('div'); pivot.className='pivot';
-  root.append(hour,min,pivot);
+  root.append(hourH,minH,pivot);
   window.addEventListener('resize', ()=>placeTicks(root));
 
   const lettersWrap=document.getElementById('lettersWrap');
@@ -523,7 +509,7 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   const nextBtn = document.getElementById('wNext');
   const endMsg = document.getElementById('writeEnd');
 
-  // level toggle
+  /* level toggle */
   let level='easy';
   const tog = document.getElementById('lvlToggle');
   [...tog.children].forEach(btn=>{
@@ -535,7 +521,7 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     });
   });
 
-  // quarter chips
+  /* quarter selection */
   const chVir=document.getElementById('chVir');
   const chOp =document.getElementById('chOp');
   let selected=''; // 'vir' or 'op'
@@ -548,11 +534,11 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   chOp .addEventListener('click',()=>setSelected('op'));
 
   function setClock(h,m){
-    setHand(min, m*6);
-    setHand(hour, (h%12)*30 + m*0.5);
+    setHand(minH, m*6);
+    setHand(hourH, (h%12)*30 + m*0.5);
   }
 
-  function render(i, keepLevel=false){
+  function render(i){
     if(i>=order.length){
       fb.textContent=''; checkBtn.disabled=true; nextBtn.disabled=true; endMsg.style.display='block';
       return;
@@ -563,53 +549,66 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     setSelected('');
     fb.textContent='';
     nextBtn.disabled=true;
-    // input area
     lettersWrap.innerHTML='';
     oneBox.textContent='';
     if(level==='easy'){
       oneBox.style.display='none';
-      // create per-letter boxes for the HOUR WORD only
       for(let k=0;k<p.hour.length;k++){
         const d=document.createElement('div');
-        d.className='lbox';
-        d.dataset.idx=k;
+        d.className='lbox'; d.dataset.idx=k;
         lettersWrap.appendChild(d);
       }
     }else{
-      lettersWrap.innerHTML='';
       oneBox.style.display='block';
     }
   }
 
-  function currentTarget(){
-    const p = prompts[order[idx]];
-    return p;
-  }
+  function current(){ return prompts[order[idx]]; }
   function typedHour(){
-    if(level==='easy'){
-      return [...lettersWrap.querySelectorAll('.lbox')].map(b=>b.textContent||'').join('');
-    }else{
-      return (oneBox.textContent||'').trim();
-    }
+    return (level==='easy')
+      ? [...lettersWrap.querySelectorAll('.lbox')].map(b=>b.textContent||'').join('')
+      : (oneBox.textContent||'');
   }
 
   checkBtn.addEventListener('click', ()=>{
-    const p=currentTarget();
+    const p=current();
     const okType = (selected === p.type);
-    const okWord = typedHour().toLowerCase() === p.hour.toLowerCase();
+    // case-sensitive equality required:
+    const okWord = typedHour() === p.hour;
     fb.textContent = (okType && okWord) ? 'Richteg!' : 'Nach eng Kéier!';
     if(okType && okWord){ nextBtn.disabled=false; }
   });
   nextBtn.addEventListener('click', ()=>{ idx++; render(idx); });
 
-  // QWERTZ keyboard
+  /* QWERTZ keyboard with real CAPS toggle */
   const kbd=document.getElementById('kbd');
   let caps=false;
+
+  function addKey(baseLower, span=1, id=''){
+    const b=document.createElement('div');
+    b.className='key'+(span===2?' wide':'')+(span===3?' wider':'');
+    if(id) b.id=id;
+    b.dataset.lower = baseLower;
+    b.dataset.upper = baseLower.toUpperCase();
+    b.textContent = caps ? b.dataset.upper : b.dataset.lower;
+    b.addEventListener('click', ()=>{
+      const ch = caps ? b.dataset.upper : b.dataset.lower;
+      press(ch);
+    });
+    kbd.appendChild(b);
+  }
+  function refreshKeyFaces(){
+    [...kbd.children].forEach(k=>{
+      if(k.classList.contains('key')){
+        if(k.id==='capsKey') k.style.background = caps ? '#e8ddff' : '#fff';
+        else k.textContent = caps ? (k.dataset.upper||k.textContent) : (k.dataset.lower||k.textContent);
+      }
+    });
+  }
   function press(ch){
-    if(ch==='CAPS'){ caps=!caps; document.getElementById('capsKey').style.background=caps?'#e8ddff':'#fff'; return; }
+    if(ch==='CAPS'){ caps=!caps; refreshKeyFaces(); return; }
     if(ch==='⌫'){
       if(level==='easy'){
-        // remove from last filled box
         const boxes=[...lettersWrap.querySelectorAll('.lbox')];
         for(let i=boxes.length-1;i>=0;i--){ if(boxes[i].textContent){ boxes[i].textContent=''; break; } }
       }else{
@@ -617,26 +616,18 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
       }
       return;
     }
-    const out = caps ? ch.toUpperCase() : ch;
     if(level==='easy'){
       const box=[...lettersWrap.querySelectorAll('.lbox')].find(b=>!b.textContent);
-      if(box) box.textContent = out;
+      if(box) box.textContent = ch;
     }else{
-      oneBox.textContent += out;
+      oneBox.textContent += ch;
     }
   }
-  function addKey(label, span=1, id=''){
-    const b=document.createElement('div');
-    b.className='key'+(span===2?' wide':'')+(span===3?' wider':'');
-    if(id) b.id=id;
-    b.textContent=label;
-    b.addEventListener('click', ()=>press(label));
-    kbd.appendChild(b);
-  }
-  // Rows
-  const row1 = ["Q","W","E","R","T","Z","U","I","O","P","Ü","'"];
-  const row2 = ["A","S","D","F","G","H","J","K","L","Ö","Ä","-"];
-  const row3 = ["Y","X","C","V","B","N","M","é","ë","ä","é","è"];
+
+  // Build QWERTZ rows (lowercase base; diacritics included)
+  const row1 = ["q","w","e","r","t","z","u","i","o","p","ü","'"];
+  const row2 = ["a","s","d","f","g","h","j","k","l","ö","ä","-"];
+  const row3 = ["y","x","c","v","b","n","m","é","ë","ä","é","è"];
   row1.forEach(k=>addKey(k));
   row2.forEach(k=>addKey(k));
   row3.forEach(k=>addKey(k));
@@ -659,4 +650,5 @@ document.querySelectorAll('.tab').forEach(btn=>{
 </script>
 </body>
 </html>
+
 
