@@ -12,14 +12,14 @@
   }
 
   :root{
-    /* P4 purple palette */
-    --p4:#7e57c2;
-    --p4-soft:#efe9fb;
-    --p4-mid:#bba5eb;
+    /* P4 purples */
+    --p4:#8f5aa0;     /* main */
+    --p4-mid:#b0a4cc; /* mid */
+    --p4-soft:#cda7ca;/* soft bg */
+    /* Hands */
+    --minute:#75b7cb; /* keep minute hand BLUE */
+    --hour:#f1583f;
 
-    --red:#f1583f;      /* hour + pivot ring */
-    --blue:var(--p4);   /* minute + accents (purple for P4) */
-    --blue-soft:var(--p4-soft);
     --face:url('https://i.postimg.cc/6qC1Vnjg/temp-Imagel6-ZZRm.avif');
     --btn-r:18px;
   }
@@ -31,15 +31,15 @@
   }
 
   /* tabs */
-  .topbar{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:14px 12px;background:var(--blue-soft);border-bottom:4px solid var(--blue);}
-  .tab{background:#fff;border:3px solid var(--blue);border-radius:999px;padding:8px 16px;font-size:20px;cursor:pointer;font-family:'Schoulschrëft',Arial,sans-serif;}
+  .topbar{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:14px 12px;background:var(--p4-soft);border-bottom:4px solid var(--p4);}
+  .tab{background:#fff;border:3px solid var(--p4);border-radius:999px;padding:8px 16px;font-size:20px;cursor:pointer;font-family:'Schoulschrëft',Arial,sans-serif;}
   .tab.active{background:#f7fcfd}
 
   .section{display:none;padding:18px 12px 30px;}
   .section.active{display:block}
   .center{text-align:center}
-  .chip{display:inline-block;padding:8px 14px;border-radius:16px;border:3px solid var(--blue);background:#fff;font-size:28px;}
-  .btn{font-family:'Schoulschrëft',Arial,sans-serif;border:3px solid var(--blue);background:#fff;border-radius:var(--btn-r);padding:10px 20px;font-size:22px;cursor:pointer;}
+  .chip{display:inline-block;padding:8px 14px;border-radius:16px;border:3px solid var(--p4);background:#fff;font-size:28px;}
+  .btn{font-family:'Schoulschrëft',Arial,sans-serif;border:3px solid var(--p4);background:#fff;border-radius:var(--btn-r);padding:10px 20px;font-size:22px;cursor:pointer;}
   .btn[disabled]{opacity:.5; cursor:not-allowed;}
   .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}
   .row{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;}
@@ -62,10 +62,10 @@
   }
 
   .hand{position:absolute;left:50%;top:50%;transform-origin:50% 100%;border-radius:6px;touch-action:none;cursor:grab;z-index:1;}
-  .min{  width:6px;height:150px;background:var(--blue);transform:translate(-50%,-100%) rotate(0deg);z-index:2;}
-  .hour{ width:8px;height:110px;background:var(--red); transform:translate(-50%,-100%) rotate(0deg);z-index:3;}
+  .min{  width:6px;height:150px;background:var(--minute);transform:translate(-50%,-100%) rotate(0deg);z-index:2;}
+  .hour{ width:8px;height:110px;background:var(--hour); transform:translate(-50%,-100%) rotate(0deg);z-index:3;}
   .ghost{opacity:.6}
-  .pivot{position:absolute;left:50%;top:50%;width:18px;height:18px;background:#fff;border:4px solid var(--red);border-radius:50%;transform:translate(-50%,-50%);z-index:4;}
+  .pivot{position:absolute;left:50%;top:50%;width:18px;height:18px;background:#fff;border:4px solid var(--hour);border-radius:50%;transform:translate(-50%,-50%);z-index:4;}
 
   .readout{font-size:26px;min-height:32px}
   .options{display:flex;flex-direction:column;gap:10px;max-width:860px;margin:0 auto;}
@@ -73,21 +73,32 @@
   .quiz-actions{display:flex;gap:10px;justify-content:center;margin-top:12px;}
   .quiz-feedback{min-height:32px;font-size:24px;text-align:center;margin-top:8px;}
 
-  /* Schreif keyboard */
-  .kbd{display:grid;grid-template-columns:repeat(11, minmax(28px, 1fr));gap:8px;max-width:760px;margin:12px auto 0;}
-  .key{border:3px solid var(--blue);border-radius:10px;padding:10px 8px;background:#fff;font-size:22px;cursor:pointer;user-select:none}
-  .key.wide{grid-column:span 2}
+  /* Schreif UI */
+  .choiceCol{display:flex;flex-direction:column;gap:10px;width:min(520px,90vw);margin:0 auto}
+  .choice{border:3px solid var(--p4);border-radius:14px;padding:10px 14px;font-size:24px;background:#fff;cursor:pointer}
+  .choice.top{border-bottom-left-radius:6px;border-bottom-right-radius:6px}
+  .choice.bottom{border-top-left-radius:6px;border-top-right-radius:6px}
+  .choice.active{background:var(--p4-mid)}
   .answerbox{min-height:44px;border:3px dashed var(--p4-mid);border-radius:12px;padding:10px 14px;font-size:26px;margin-top:8px;background:#fff}
-  .toggle{display:inline-flex;border:3px solid var(--blue);border-radius:999px;overflow:hidden}
-  .toggle button{border:0;padding:8px 14px;font-size:20px;cursor:pointer;background:#fff}
+  .letters{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px auto 0;max-width:780px}
+  .lbox{width:34px;height:44px;border:3px solid var(--p4-mid);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#fff}
+  .toggle{display:inline-flex;border:3px solid var(--p4);border-radius:999px;overflow:hidden;font-family:'Schoulschrëft',Arial,sans-serif}
+  .toggle button{border:0;padding:8px 14px;font-size:20px;cursor:pointer;background:#fff;font-family:'Schoulschrëft',Arial,sans-serif}
   .toggle .on{background:var(--p4-mid)}
+
+  /* QWERTZ keyboard */
+  .kbd{display:grid;gap:8px;max-width:860px;margin:12px auto 0;
+       grid-template-columns:repeat(12, minmax(28px, 1fr))}
+  .key{border:3px solid var(--p4);border-radius:10px;padding:10px 8px;background:#fff;font-size:22px;cursor:pointer;user-select:none;text-align:center}
+  .key.wide{grid-column:span 2}
+  .key.wider{grid-column:span 3}
 
   @media (max-width:480px){
     .clock{width:300px;height:300px}
     .hour{height:92px}.min{height:128px}
     .tick{width:36px;height:36px}
     .chip{font-size:24px}.btn{font-size:20px}
-    .kbd{grid-template-columns:repeat(9, minmax(28px, 1fr))}
+    .kbd{grid-template-columns:repeat(10, minmax(28px, 1fr))}
   }
 </style>
 </head>
@@ -127,7 +138,7 @@
   <div class="clock-wrap mt16">
     <div id="c2" class="clock"></div>
     <div class="row mt12">
-      <button class="btn" id="pReplay" disabled title="⟲ Nach eng Kéier lauschteren">⟲ Nach eng Kéier</button>
+      <button class="btn" id="pReplay" disabled>⟲ Nach eng Kéier</button>
       <button class="btn" id="pValidate">Validéieren</button>
     </div>
     <div class="readout center" id="pFeedback"></div>
@@ -165,22 +176,30 @@
   </div>
   <div class="clock-wrap mt16">
     <div id="c4" class="clock"></div>
-    <div class="center">
-      <div id="writeHint" class="mt8" style="font-size:20px;"></div>
-      <div class="answerbox" id="typed"></div>
-      <div class="row mt12">
-        <button class="btn" id="wCheck">Iwwerpréiwen</button>
-        <button class="btn" id="wNext" disabled>Weider</button>
-      </div>
-      <div class="readout center" id="wFb"></div>
+
+    <div class="center" style="font-size:24px;margin-top:6px">Et ass</div>
+
+    <div class="choiceCol mt8">
+      <button class="choice top" id="chVir">Véierel vir</button>
+      <button class="choice bottom" id="chOp">Véierel op</button>
     </div>
+
+    <div id="lettersWrap" class="letters"></div>
+    <div id="oneBox" class="answerbox" style="display:none"></div>
+
+    <div class="row mt12">
+      <button class="btn" id="wCheck">Iwwerpréiwen</button>
+      <button class="btn" id="wNext" disabled>Weider</button>
+    </div>
+    <div class="readout center" id="wFb"></div>
+
     <div class="kbd" id="kbd"></div>
     <div class="center mt12" id="writeEnd" style="display:none;font-size:24px">Alles fäerdeg – gutt gemaach! 🎉</div>
   </div>
 </section>
 
 <script>
-/* ---------- shared helpers ---------- */
+/* ---------- helpers ---------- */
 function setHand(el,deg){ el.style.transform=`translate(-50%,-100%) rotate(${deg}deg)`; el.dataset.deg=deg }
 function degFromPointer(e, clockEl){
   const r=clockEl.getBoundingClientRect();
@@ -207,7 +226,7 @@ function placeTicks(clockEl){
   }
 }
 
-/* ---------- Simple practice clock ---------- */
+/* ---------- Auer üben ---------- */
 function coupledClock(rootId, readoutId, showDigital=true){
   const root=document.getElementById(rootId);
   placeTicks(root);
@@ -261,14 +280,13 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   document.getElementById('c1readout').style.display = e.target.checked ? 'block' : 'none';
 });
 
-/* ---------- 1) Lauschteren: audio set-the-time ---------- */
+/* ---------- 1) Lauschteren ---------- */
 (function(){
   const RAW_P3 = "https://github.com/albrechtclaire1007/p3auer/raw/refs/heads/main/";
   const RAW_P4 = "https://github.com/albrechtclaire1007/p4auer/raw/refs/heads/main/";
 
-  // P3 audios reused (full + half)
   const items = [
-    // Voll Stonnen (1,3,5,6,8,9,10,12)
+    // Voll (reused)
     { h:10, m:0,  audio: RAW_P3 + "10%20AUER.mp3" },
     { h:9,  m:0,  audio: RAW_P3 + "9%20AUER.mp3"  },
     { h:8,  m:0,  audio: RAW_P3 + "8%20AUER.mp3"  },
@@ -277,8 +295,7 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     { h:3,  m:0,  audio: RAW_P3 + "3%20AUER.mp3"  },
     { h:12, m:0,  audio: RAW_P3 + "12%20AUER.mp3" },
     { h:1,  m:0,  audio: RAW_P3 + "1%20AUER.mp3"  },
-
-    // Hallef Stonnen
+    // Hallef (reused)
     { h:2,  m:30, audio: RAW_P3 + "230.mp3"  },
     { h:4,  m:30, audio: RAW_P3 + "430.mp3"  },
     { h:6,  m:30, audio: RAW_P3 + "630.mp3"  },
@@ -286,16 +303,15 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     { h:8,  m:30, audio: RAW_P3 + "830.mp3"  },
     { h:9,  m:30, audio: RAW_P3 + "930.mp3"  },
     { h:11, m:30, audio: RAW_P3 + "1130.mp3" },
-
-    // NEW – Véierel op / vir  (from your screenshot list in p4 repo)
-    { h:10, m:15, audio: RAW_P4 + "1015.mp3" }, // Véierel op zéng
-    { h:12, m:15, audio: RAW_P4 + "1215.mp3" }, // Véierel op zwielef
-    { h:8,  m:15, audio: RAW_P4 + "815.mp3"  }, // Véierel op aacht
-    { h:5,  m:15, audio: RAW_P4 + "515.mp3"  }, // Véierel op fënnef
-    { h:2,  m:45, audio: RAW_P4 + "245.mp3"  }, // Véierel vir dräi
-    { h:6,  m:45, audio: RAW_P4 + "645.mp3"  }, // Véierel vir siwen
-    { h:9,  m:45, audio: RAW_P4 + "945.mp3"  }, // Véierel vir zéng
-    { h:11, m:45, audio: RAW_P4 + "1145.mp3" }, // Véierel vir zwielef
+    // NEW quarters
+    { h:10, m:15, audio: RAW_P4 + "1015.mp3" },
+    { h:12, m:15, audio: RAW_P4 + "1215.mp3" },
+    { h:8,  m:15, audio: RAW_P4 + "815.mp3"  },
+    { h:5,  m:15, audio: RAW_P4 + "515.mp3"  },
+    { h:2,  m:45, audio: RAW_P4 + "245.mp3"  },
+    { h:6,  m:45, audio: RAW_P4 + "645.mp3"  },
+    { h:9,  m:45, audio: RAW_P4 + "945.mp3"  },
+    { h:11, m:45, audio: RAW_P4 + "1145.mp3" },
   ];
 
   function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -325,7 +341,7 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   }
 
   function load(i){
-    if(i>=items.length){ // end
+    if(i>=items.length){
       fb.textContent = 'Alles fäerdeg – top!';
       replayBtn.disabled = true;
       document.getElementById('pValidate').disabled = true;
@@ -375,29 +391,36 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   load(idx);
 })();
 
-/* ---------- 2) Quiz (10 new quarter + 10 existing) ---------- */
+/* ---------- 2) Quiz (quarters with realistic mistakes) ---------- */
 (function(){
-  const quizData = [
-    // NEW – Véierel op / vir
-    { h:10, m:15, opts:["Et ass Véierel op zéng.","Et ass hallwer zéng.","Et ass Véierel vir zéng."], correct:0 },
-    { h:8,  m:15, opts:["Et ass Véierel op aacht.","Et ass aacht drësseg.","Et ass Véierel vir aacht."], correct:0 },
-    { h:5,  m:15, opts:["Et ass Véierel op fënnef.","Et ass Véierel vir sechs.","Et ass fënnef Auer."], correct:0 },
-    { h:12, m:15, opts:["Et ass Véierel op zwielef.","Et ass zwielef Auer.","Et ass hallwer eent."], correct:0 },
-    { h:2,  m:45, opts:["Et ass Véierel vir dräi.","Et ass dräi Auer.","Et ass Véierel op dräi."], correct:0 },
-    { h:6,  m:45, opts:["Et ass Véierel vir siwen.","Et ass hallwer siwen.","Et ass siwen drësseg."], correct:0 },
-    { h:9,  m:45, opts:["Et ass Véierel vir zéng.","Et ass zéng Auer.","Et ass Véierel op néng."], correct:0 },
-    { h:11, m:45, opts:["Et ass Véierel vir zwielef.","Et ass zwielef Auer.","Et ass Véierel op zwielef."], correct:0 },
-    { h:3,  m:15, opts:["Et ass Véierel op dräi.","Et ass hallwer véier.","Et ass Véierel vir dräi."], correct:0 },
-    { h:7,  m:45, opts:["Et ass Véierel vir aacht.","Et ass Véierel op aacht.","Et ass hallwer aacht."], correct:0 },
+  // helper to set clock
+  function setClock(h,m){
+    setHand(min, m*6);
+    setHand(hour, (h%12)*30 + m*0.5);
+  }
 
-    // EXISTING – 5 voll
-    { h:12, m:0,  opts:["Et ass zwielef.","Et ass zwielef Auer.","Et ass Auer zwielef."], correct:1 },
+  // 10 NEW quarter questions
+  const newQ = [
+    // time shown -> options [correct, typical confusion same hour other direction, confusion with previous/next hour], some lowercase "véierel"
+    { h:3,  m:45, opts:["Et ass Véierel vir véier","Et ass Véierel op véier","Et ass Véierel vir dräi"], correct:0 },
+    { h:10, m:15, opts:["Et ass Véierel op zéng","Et ass véierel vir zéng","Et ass Véierel op néng"], correct:0 },
+    { h:8,  m:45, opts:["Et ass Véierel vir aacht","Et ass Véierel op aacht","Et ass véierel vir siwen"], correct:0 },
+    { h:5,  m:15, opts:["Et ass Véierel op fënnef","Et ass véierel vir fënnef","Et ass Véierel op véier"], correct:0 },
+    { h:12, m:45, opts:["Et ass Véierel vir eent","Et ass Véierel op eent","Et ass véierel vir zwielef"], correct:0 },
+    { h:2,  m:15, opts:["Et ass Véierel op zwee","Et ass Véierel vir zwee","Et ass véierel op dräi"], correct:0 },
+    { h:6,  m:45, opts:["Et ass Véierel vir siwen","Et ass véierel op siwen","Et ass Véierel vir sechs"], correct:0 },
+    { h:9,  m:15, opts:["Et ass Véierel op néng","Et ass Véierel vir néng","Et ass véierel op zéng"], correct:0 },
+    { h:11, m:45, opts:["Et ass Véierel vir zwielef","Et ass Véierel op zwielef","Et ass véierel vir eelef"], correct:0 },
+    { h:7,  m:15, opts:["Et ass Véierel op aacht","Et ass véierel vir aacht","Et ass Véierel op siwen"], correct:0 },
+  ];
+
+  // Existing 10 (5 full + 5 half) from P3 set
+  const oldQ = [
+    { h:12, m:0,  opts:["Et ass zwielef.","Et ass zwielef Auer","Et ass Auer zwielef."], correct:1 },
     { h:10, m:0,  opts:["Et ass zéng Auer.","Et ass Auer zéng.","Et ass zéng."], correct:0 },
     { h:4,  m:0,  opts:["Et ass véier.","Et ass véier Auer.","Et ass Auer véier."], correct:1 },
     { h:9,  m:0,  opts:["Et ass néng Auer.","Et ass Auer néng.","Et ass néng."], correct:0 },
     { h:1,  m:0,  opts:["Et ass eent Auer.","Et ass een Auer.","Et ass eng Auer."], correct:2 },
-
-    // EXISTING – 5 hallwer
     { h:9,  m:30, opts:["Et ass néng drësseg.","Et ass hallwer zéng.","Et ass hallwer néng."], correct:1 },
     { h:10, m:30, opts:["Et ass zéng drësseg.","Et ass sechs Auer.","Et ass hallwer eelef."], correct:2 },
     { h:3,  m:30, opts:["Et ass hallwer fënnef.","Et ass hallwer véier.","Et ass véier hallwer."], correct:1 },
@@ -405,9 +428,10 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     { h:6,  m:30, opts:["Et ass hallwer siwen.","Et ass hallwer sechs.","Et ass hallwer aacht."], correct:0 },
   ];
 
-  let order=[...quizData.keys()];
-  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-  shuffle(order);
+  const quizData = [...newQ, ...oldQ];
+
+  // randomized order
+  let order=[...quizData.keys()]; for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
   let qIndex = 0;
 
   const root=document.getElementById('c3');
@@ -424,10 +448,6 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   const feedback = document.getElementById('quizFeedback');
   const endMsg = document.getElementById('quizEnd');
 
-  function setClock(h,m){
-    setHand(min, m*6);
-    setHand(hour, (h%12)*30 + m*0.5);
-  }
   function renderQuestion(i){
     if(i>=order.length){
       optsEl.innerHTML=''; feedback.textContent=''; retryBtn.disabled=true; nextBtn.disabled=true;
@@ -470,24 +490,22 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   renderQuestion(qIndex);
 })();
 
-/* ---------- 3) Schreif (keyboard + two levels) ---------- */
+/* ---------- 3) Schreif (QWERTZ keyboard, two levels) ---------- */
 (function(){
-  // 10 prompts (5x Véierel op, 5x Véierel vir). Keep answers as strings to type.
+  // Prompts (quarter to/past)
   const prompts = [
-    {h:10,m:15, ans:"Véierel op zéng"},
-    {h:8, m:15, ans:"Véierel op aacht"},
-    {h:5, m:15, ans:"Véierel op fënnef"},
-    {h:12,m:15, ans:"Véierel op zwielef"},
-    {h:3, m:15, ans:"Véierel op dräi"},
-    {h:2, m:45, ans:"Véierel vir dräi"},
-    {h:6, m:45, ans:"Véierel vir siwen"},
-    {h:9, m:45, ans:"Véierel vir zéng"},
-    {h:11,m:45, ans:"Véierel vir zwielef"},
-    {h:7, m:45, ans:"Véierel vir aacht"},
+    {h:3,  m:45, type:'vir', hour:'véier'},
+    {h:10, m:15, type:'op',  hour:'zéng'},
+    {h:8,  m:45, type:'vir', hour:'aacht'},
+    {h:5,  m:15, type:'op',  hour:'fënnef'},
+    {h:12, m:45, type:'vir', hour:'eent'},
+    {h:2,  m:15, type:'op',  hour:'zwee'},
+    {h:6,  m:45, type:'vir', hour:'siwen'},
+    {h:9,  m:15, type:'op',  hour:'néng'},
+    {h:11, m:45, type:'vir', hour:'zwielef'},
+    {h:7,  m:15, type:'op',  hour:'aacht'},
   ];
-  let order=[...prompts.keys()];
-  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-  shuffle(order);
+  let order=[...prompts.keys()]; for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
   let idx=0;
 
   const root=document.getElementById('c4');
@@ -498,11 +516,11 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   root.append(hour,min,pivot);
   window.addEventListener('resize', ()=>placeTicks(root));
 
-  const typed = document.getElementById('typed');
+  const lettersWrap=document.getElementById('lettersWrap');
+  const oneBox = document.getElementById('oneBox');
   const fb = document.getElementById('wFb');
   const checkBtn = document.getElementById('wCheck');
   const nextBtn = document.getElementById('wNext');
-  const hint = document.getElementById('writeHint');
   const endMsg = document.getElementById('writeEnd');
 
   // level toggle
@@ -513,16 +531,28 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
       [...tog.children].forEach(b=>b.classList.remove('on'));
       btn.classList.add('on');
       level = btn.dataset.lvl==='hard' ? 'hard' : 'easy';
-      showHint();
+      render(idx, true);
     });
   });
+
+  // quarter chips
+  const chVir=document.getElementById('chVir');
+  const chOp =document.getElementById('chOp');
+  let selected=''; // 'vir' or 'op'
+  function setSelected(which){
+    selected = which;
+    chVir.classList.toggle('active', which==='vir');
+    chOp.classList.toggle('active',  which==='op');
+  }
+  chVir.addEventListener('click',()=>setSelected('vir'));
+  chOp .addEventListener('click',()=>setSelected('op'));
 
   function setClock(h,m){
     setHand(min, m*6);
     setHand(hour, (h%12)*30 + m*0.5);
   }
 
-  function render(i){
+  function render(i, keepLevel=false){
     if(i>=order.length){
       fb.textContent=''; checkBtn.disabled=true; nextBtn.disabled=true; endMsg.style.display='block';
       return;
@@ -530,58 +560,89 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     endMsg.style.display='none';
     const p = prompts[order[i]];
     setClock(p.h, p.m);
-    typed.textContent='';
+    setSelected('');
     fb.textContent='';
     nextBtn.disabled=true;
-    showHint();
-  }
-
-  function showHint(){
-    const p = prompts[order[idx]];
-    if(!p){ hint.textContent=''; return; }
+    // input area
+    lettersWrap.innerHTML='';
+    oneBox.textContent='';
     if(level==='easy'){
-      // display required letters count
-      const len = p.ans.length;
-      hint.textContent = `Tipp: ${len} Zeechen (mat Leerzeechen)`;
+      oneBox.style.display='none';
+      // create per-letter boxes for the HOUR WORD only
+      for(let k=0;k<p.hour.length;k++){
+        const d=document.createElement('div');
+        d.className='lbox';
+        d.dataset.idx=k;
+        lettersWrap.appendChild(d);
+      }
     }else{
-      hint.textContent = '';
+      lettersWrap.innerHTML='';
+      oneBox.style.display='block';
     }
   }
 
-  // keyboard
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜÉÈËÂÎÔabcdefghijklmnopqrstuvwxyzäöüéèëâîô -'";
-  const keysRow = [...letters];
-  const kbd = document.getElementById('kbd');
-  function addKey(label, cls=''){
-    const b=document.createElement('div');
-    b.className='key'+(cls?(' '+cls):'');
-    b.textContent=label;
-    b.addEventListener('click', ()=> press(label));
-    kbd.appendChild(b);
+  function currentTarget(){
+    const p = prompts[order[idx]];
+    return p;
   }
-  let caps=false;
-  function press(label){
-    if(label==='⌫'){ typed.textContent = typed.textContent.slice(0,-1); return; }
-    if(label==='CAPS'){ caps=!caps; document.getElementById('capsKey').style.background = caps ? '#e8ddff' : '#fff'; return; }
-    const toAdd = caps ? label.toUpperCase() : label;
-    typed.textContent += toAdd;
+  function typedHour(){
+    if(level==='easy'){
+      return [...lettersWrap.querySelectorAll('.lbox')].map(b=>b.textContent||'').join('');
+    }else{
+      return (oneBox.textContent||'').trim();
+    }
   }
-  // Build keyboard (Lux letters and space / dash / apostrophe)
-  const layout = ["V","é","i","e","r","e","l"," ","o","p"," ","v","i","r"," ","a","b","c","d","f","g","h","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","ä","ë","é","è","'","-"];
-  layout.forEach(ch=>addKey(ch));
-  const capsKey=document.createElement('div'); capsKey.className='key wide'; capsKey.id='capsKey'; capsKey.textContent='CAPS'; capsKey.addEventListener('click',()=>press('CAPS'));
-  kbd.appendChild(capsKey);
-  const bk=document.createElement('div'); bk.className='key wide'; bk.textContent='⌫'; bk.addEventListener('click',()=>press('⌫')); kbd.appendChild(bk);
-  const space=document.createElement('div'); space.className='key wide'; space.textContent=' '; space.addEventListener('click',()=>press(' ')); kbd.appendChild(space);
 
-  function normalize(s){ return s.replace(/\s+/g,' ').trim(); }
   checkBtn.addEventListener('click', ()=>{
-    const want = prompts[order[idx]].ans;
-    const ok = normalize(typed.textContent).toLowerCase() === normalize(want).toLowerCase();
-    fb.textContent = ok ? 'Richteg!' : 'Nach eng Kéier!';
-    if(ok){ nextBtn.disabled=false; }
+    const p=currentTarget();
+    const okType = (selected === p.type);
+    const okWord = typedHour().toLowerCase() === p.hour.toLowerCase();
+    fb.textContent = (okType && okWord) ? 'Richteg!' : 'Nach eng Kéier!';
+    if(okType && okWord){ nextBtn.disabled=false; }
   });
   nextBtn.addEventListener('click', ()=>{ idx++; render(idx); });
+
+  // QWERTZ keyboard
+  const kbd=document.getElementById('kbd');
+  let caps=false;
+  function press(ch){
+    if(ch==='CAPS'){ caps=!caps; document.getElementById('capsKey').style.background=caps?'#e8ddff':'#fff'; return; }
+    if(ch==='⌫'){
+      if(level==='easy'){
+        // remove from last filled box
+        const boxes=[...lettersWrap.querySelectorAll('.lbox')];
+        for(let i=boxes.length-1;i>=0;i--){ if(boxes[i].textContent){ boxes[i].textContent=''; break; } }
+      }else{
+        oneBox.textContent = oneBox.textContent.slice(0,-1);
+      }
+      return;
+    }
+    const out = caps ? ch.toUpperCase() : ch;
+    if(level==='easy'){
+      const box=[...lettersWrap.querySelectorAll('.lbox')].find(b=>!b.textContent);
+      if(box) box.textContent = out;
+    }else{
+      oneBox.textContent += out;
+    }
+  }
+  function addKey(label, span=1, id=''){
+    const b=document.createElement('div');
+    b.className='key'+(span===2?' wide':'')+(span===3?' wider':'');
+    if(id) b.id=id;
+    b.textContent=label;
+    b.addEventListener('click', ()=>press(label));
+    kbd.appendChild(b);
+  }
+  // Rows
+  const row1 = ["Q","W","E","R","T","Z","U","I","O","P","Ü","'"];
+  const row2 = ["A","S","D","F","G","H","J","K","L","Ö","Ä","-"];
+  const row3 = ["Y","X","C","V","B","N","M","é","ë","ä","é","è"];
+  row1.forEach(k=>addKey(k));
+  row2.forEach(k=>addKey(k));
+  row3.forEach(k=>addKey(k));
+  addKey("CAPS",2,'capsKey');
+  addKey("⌫",2);
+  addKey(" ",3);
 
   render(idx);
 })();
@@ -598,3 +659,4 @@ document.querySelectorAll('.tab').forEach(btn=>{
 </script>
 </body>
 </html>
+
