@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="lb">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>P4 – Wéi vill Auer ass et? Üben, Lauschteren, Quiz & Schreif</title>
+<style>
+  @font-face{
+    font-family:'Schoulschrëft';
+    src:url('https://raw.githubusercontent.com/albrechtclaire1007/schoulschreft/main/schoulschreft_bold%5B2%5D.TTF') format('truetype');
+    font-weight:bold; font-display:swap;
+  }
+
+  :root{
+    /* P4 purple palette */
+    --p4:#7e57c2;
+    --p4-soft:#efe9fb;
+    --p4-mid:#bba5eb;
+
+    --red:#f1583f;      /* hour + pivot ring */
+    --blue:var(--p4);   /* minute + accents (purple for P4) */
+    --blue-soft:var(--p4-soft);
+    --face:url('https://i.postimg.cc/6qC1Vnjg/temp-Imagel6-ZZRm.avif');
+    --btn-r:18px;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; background:#fffef8; color:#111;
+    font-family:'Schoulschrëft', Arial, sans-serif; display:flex; flex-direction:column;
+  }
+
+  /* tabs */
+  .topbar{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:14px 12px;background:var(--blue-soft);border-bottom:4px solid var(--blue);}
+  .tab{background:#fff;border:3px solid var(--blue);border-radius:999px;padding:8px 16px;font-size:20px;cursor:pointer;font-family:'Schoulschrëft',Arial,sans-serif;}
+  .tab.active{background:#f7fcfd}
+
+  .section{display:none;padding:18px 12px 30px;}
+  .section.active{display:block}
+  .center{text-align:center}
+  .chip{display:inline-block;padding:8px 14px;border-radius:16px;border:3px solid var(--blue);background:#fff;font-size:28px;}
+  .btn{font-family:'Schoulschrëft',Arial,sans-serif;border:3px solid var(--blue);background:#fff;border-radius:var(--btn-r);padding:10px 20px;font-size:22px;cursor:pointer;}
+  .btn[disabled]{opacity:.5; cursor:not-allowed;}
+  .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}
+  .row{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;}
+
+  /* clock */
+  .clock-wrap{display:flex;flex-direction:column;align-items:center;}
+  .clock{
+    position:relative;width:360px;height:360px;
+    background:#fff center/contain no-repeat;background-image:var(--face);
+    border-radius:50%;margin:16px auto;box-shadow:0 6px 18px rgba(0,0,0,.06);touch-action:none;
+  }
+
+  .tick{position:absolute;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;}
+  .flash-green{animation:greenflash 900ms ease-in-out 1;}
+  @keyframes greenflash{
+    0%{box-shadow:0 0 0 0 rgba(0,160,0,0);background:transparent;}
+    25%{box-shadow:0 0 0 6px rgba(0,160,0,.15);background:rgba(0,200,0,.08);}
+    55%{box-shadow:0 0 0 10px rgba(0,160,0,.22);background:rgba(0,200,0,.12);}
+    100%{box-shadow:0 0 0 0 rgba(0,160,0,0);background:transparent;}
+  }
+
+  .hand{position:absolute;left:50%;top:50%;transform-origin:50% 100%;border-radius:6px;touch-action:none;cursor:grab;z-index:1;}
+  .min{  width:6px;height:150px;background:var(--blue);transform:translate(-50%,-100%) rotate(0deg);z-index:2;}
+  .hour{ width:8px;height:110px;background:var(--red); transform:translate(-50%,-100%) rotate(0deg);z-index:3;}
+  .ghost{opacity:.6}
+  .pivot{position:absolute;left:50%;top:50%;width:18px;height:18px;background:#fff;border:4px solid var(--red);border-radius:50%;transform:translate(-50%,-50%);z-index:4;}
+
+  .readout{font-size:26px;min-height:32px}
+  .options{display:flex;flex-direction:column;gap:10px;max-width:860px;margin:0 auto;}
+  .opt-btn{text-align:left}
+  .quiz-actions{display:flex;gap:10px;justify-content:center;margin-top:12px;}
+  .quiz-feedback{min-height:32px;font-size:24px;text-align:center;margin-top:8px;}
+
+  /* Schreif keyboard */
+  .kbd{display:grid;grid-template-columns:repeat(11, minmax(28px, 1fr));gap:8px;max-width:760px;margin:12px auto 0;}
+  .key{border:3px solid var(--blue);border-radius:10px;padding:10px 8px;background:#fff;font-size:22px;cursor:pointer;user-select:none}
+  .key.wide{grid-column:span 2}
+  .answerbox{min-height:44px;border:3px dashed var(--p4-mid);border-radius:12px;padding:10px 14px;font-size:26px;margin-top:8px;background:#fff}
+  .toggle{display:inline-flex;border:3px solid var(--blue);border-radius:999px;overflow:hidden}
+  .toggle button{border:0;padding:8px 14px;font-size:20px;cursor:pointer;background:#fff}
+  .toggle .on{background:var(--p4-mid)}
+
+  @media (max-width:480px){
+    .clock{width:300px;height:300px}
+    .hour{height:92px}.min{height:128px}
+    .tick{width:36px;height:36px}
+    .chip{font-size:24px}.btn{font-size:20px}
+    .kbd{grid-template-columns:repeat(9, minmax(28px, 1fr))}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="tab active" data-target="aueren">Auer üben</button>
+  <button class="tab" data-target="lauschteren">1. Spill – Lauschteren</button>
+  <button class="tab" data-target="quiz">2. Spill – Quiz</button>
+  <button class="tab" data-target="schreif">3. Spill – Schreif</button>
+</div>
+
+<!-- Auer üben -->
+<section id="aueren" class="section active">
+  <div class="center">
+    <div class="chip">Probéier e puer Auerzäiten aus</div>
+    <div class="mt12">
+      <label style="font-size:20px">
+        <input type="checkbox" id="toggleDigital" checked>
+        Digital Auer uweisen
+      </label>
+    </div>
+  </div>
+  <div class="clock-wrap mt16">
+    <div id="c1" class="clock"></div>
+    <div id="c1readout" class="readout center">12:00</div>
+  </div>
+</section>
+
+<!-- 1. Spill – Lauschteren (autoplay + replay) -->
+<section id="lauschteren" class="section">
+  <div class="center">
+    <div class="chip">Wéi vill Auer ass et? Lauschteren!</div>
+    <div class="mt8">Stell d’Auer no dem Audio.</div>
+    <div class="mt12"><button class="btn" id="pEnableAudio" style="display:none">🔊 Audio aktivéieren</button></div>
+  </div>
+  <div class="clock-wrap mt16">
+    <div id="c2" class="clock"></div>
+    <div class="row mt12">
+      <button class="btn" id="pReplay" disabled title="⟲ Nach eng Kéier lauschteren">⟲ Nach eng Kéier</button>
+      <button class="btn" id="pValidate">Validéieren</button>
+    </div>
+    <div class="readout center" id="pFeedback"></div>
+  </div>
+</section>
+
+<!-- 2. Spill – Quiz -->
+<section id="quiz" class="section">
+  <div class="center">
+    <div class="chip">Wéi vill Auer ass et? Quiz!</div>
+  </div>
+  <div class="clock-wrap mt16">
+    <div id="c3" class="clock"></div>
+    <div class="options mt12" id="quizOptions"></div>
+    <div class="quiz-actions">
+      <button class="btn" id="quizRetry" disabled>Probéier nach eemol</button>
+      <button class="btn" id="quizNext" disabled>Weider</button>
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div class="center mt12" id="quizEnd" style="display:none;font-size:24px">Fäerdeg! Super geschafft 🎉</div>
+  </div>
+</section>
+
+<!-- 3. Spill – Schreif -->
+<section id="schreif" class="section">
+  <div class="center">
+    <div class="chip">Wéi vill Auer ass et? Schreif!</div>
+    <div class="mt8">
+      <span style="font-size:20px;margin-right:8px">Schwieregkeet:</span>
+      <span class="toggle" id="lvlToggle">
+        <button data-lvl="easy" class="on">einfach</button>
+        <button data-lvl="hard">schwéier</button>
+      </span>
+    </div>
+  </div>
+  <div class="clock-wrap mt16">
+    <div id="c4" class="clock"></div>
+    <div class="center">
+      <div id="writeHint" class="mt8" style="font-size:20px;"></div>
+      <div class="answerbox" id="typed"></div>
+      <div class="row mt12">
+        <button class="btn" id="wCheck">Iwwerpréiwen</button>
+        <button class="btn" id="wNext" disabled>Weider</button>
+      </div>
+      <div class="readout center" id="wFb"></div>
+    </div>
+    <div class="kbd" id="kbd"></div>
+    <div class="center mt12" id="writeEnd" style="display:none;font-size:24px">Alles fäerdeg – gutt gemaach! 🎉</div>
+  </div>
+</section>
+
+<script>
+/* ---------- shared helpers ---------- */
+function setHand(el,deg){ el.style.transform=`translate(-50%,-100%) rotate(${deg}deg)`; el.dataset.deg=deg }
+function degFromPointer(e, clockEl){
+  const r=clockEl.getBoundingClientRect();
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+  const px=(e.touches?e.touches[0].clientX:e.clientX);
+  const py=(e.touches?e.touches[0].clientY:e.clientY);
+  let d=Math.atan2(py-cy, px-cx)*180/Math.PI + 90;
+  if(d<0) d+=360;
+  return d;
+}
+function placeTicks(clockEl){
+  clockEl.querySelectorAll('.tick').forEach(t=>t.remove());
+  const rect=clockEl.getBoundingClientRect();
+  const radius = rect.width/2 - 24;
+  const cx=rect.width/2, cy=rect.height/2;
+  for(let n=1;n<=12;n++){
+    const ang=(n-3)*(Math.PI*2)/12;
+    const x=cx + radius*Math.cos(ang);
+    const y=cy + radius*Math.sin(ang);
+    const t=document.createElement('div');
+    t.className='tick'; t.dataset.n=n;
+    t.style.left=x+'px'; t.style.top=y+'px';
+    clockEl.appendChild(t);
+  }
+}
+
+/* ---------- Simple practice clock ---------- */
+function coupledClock(rootId, readoutId, showDigital=true){
+  const root=document.getElementById(rootId);
+  placeTicks(root);
+  const hour=document.createElement('div'); hour.className='hand hour';
+  const min =document.createElement('div'); min.className='hand min';
+  const pivot=document.createElement('div'); pivot.className='pivot';
+  root.append(hour,min,pivot);
+  window.addEventListener('resize', ()=>placeTicks(root));
+
+  let H=12, M=0;
+  const ro=document.getElementById(readoutId);
+
+  function normalize(){ while(M<0){M+=60;H--} while(M>=60){M-=60;H++} while(H<=0){H+=12} while(H>12){H-=12} }
+  function render(){ setHand(min,M*6); setHand(hour,(H%12)*30 + M*0.5); if(ro) ro.textContent = showDigital ? `${String(((H%12)||12)).padStart(2,'0')}:${String(M).padStart(2,'0')}` : ''; }
+  function setTime(h,m){ H=h; M=m; normalize(); render(); }
+
+  function drag(el, mode){
+    let on=false;
+    const start=e=>{ if(e.target!==el) return; on=true; e.preventDefault(); }
+    const move =e=>{
+      if(!on) return;
+      const d=degFromPointer(e, root);
+      if(mode==='min'){
+        const prev=M*6;
+        const delta=(((d - prev + 540) % 360) - 180);
+        const dm=Math.round(delta/6);
+        setTime(H, M+dm);
+      }else{
+        let total=d/30; if(total<0) total+=12;
+        let base=Math.floor(total)||12;
+        let mins=Math.round((total - Math.floor(total))*60);
+        if(mins===60){ mins=0; base=(base%12)+1; }
+        setTime(base, mins);
+      }
+    };
+    const end=()=>{ on=false; };
+    el.addEventListener('mousedown',start);
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',end);
+    el.addEventListener('touchstart',start,{passive:false});
+    window.addEventListener('touchmove',move,{passive:false});
+    window.addEventListener('touchend',end);
+  }
+  drag(min,'min'); drag(hour,'hour');
+
+  setTime(10,10);
+  return { setTime };
+}
+const simple = coupledClock('c1','c1readout', true);
+document.getElementById('toggleDigital').addEventListener('change', e=>{
+  document.getElementById('c1readout').style.display = e.target.checked ? 'block' : 'none';
+});
+
+/* ---------- 1) Lauschteren: audio set-the-time ---------- */
+(function(){
+  const RAW_P3 = "https://github.com/albrechtclaire1007/p3auer/raw/refs/heads/main/";
+  const RAW_P4 = "https://github.com/albrechtclaire1007/p4auer/raw/refs/heads/main/";
+
+  // P3 audios reused (full + half)
+  const items = [
+    // Voll Stonnen (1,3,5,6,8,9,10,12)
+    { h:10, m:0,  audio: RAW_P3 + "10%20AUER.mp3" },
+    { h:9,  m:0,  audio: RAW_P3 + "9%20AUER.mp3"  },
+    { h:8,  m:0,  audio: RAW_P3 + "8%20AUER.mp3"  },
+    { h:5,  m:0,  audio: RAW_P3 + "5%20AUER.mp3"  },
+    { h:6,  m:0,  audio: RAW_P3 + "6%20AUER.mp3"  },
+    { h:3,  m:0,  audio: RAW_P3 + "3%20AUER.mp3"  },
+    { h:12, m:0,  audio: RAW_P3 + "12%20AUER.mp3" },
+    { h:1,  m:0,  audio: RAW_P3 + "1%20AUER.mp3"  },
+
+    // Hallef Stonnen
+    { h:2,  m:30, audio: RAW_P3 + "230.mp3"  },
+    { h:4,  m:30, audio: RAW_P3 + "430.mp3"  },
+    { h:6,  m:30, audio: RAW_P3 + "630.mp3"  },
+    { h:7,  m:30, audio: RAW_P3 + "730.mp3"  },
+    { h:8,  m:30, audio: RAW_P3 + "830.mp3"  },
+    { h:9,  m:30, audio: RAW_P3 + "930.mp3"  },
+    { h:11, m:30, audio: RAW_P3 + "1130.mp3" },
+
+    // NEW – Véierel op / vir  (from your screenshot list in p4 repo)
+    { h:10, m:15, audio: RAW_P4 + "1015.mp3" }, // Véierel op zéng
+    { h:12, m:15, audio: RAW_P4 + "1215.mp3" }, // Véierel op zwielef
+    { h:8,  m:15, audio: RAW_P4 + "815.mp3"  }, // Véierel op aacht
+    { h:5,  m:15, audio: RAW_P4 + "515.mp3"  }, // Véierel op fënnef
+    { h:2,  m:45, audio: RAW_P4 + "245.mp3"  }, // Véierel vir dräi
+    { h:6,  m:45, audio: RAW_P4 + "645.mp3"  }, // Véierel vir siwen
+    { h:9,  m:45, audio: RAW_P4 + "945.mp3"  }, // Véierel vir zéng
+    { h:11, m:45, audio: RAW_P4 + "1145.mp3" }, // Véierel vir zwielef
+  ];
+
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  shuffle(items);
+  let idx=0;
+
+  const root=document.getElementById('c2');
+  placeTicks(root);
+  const hour=document.createElement('div'); hour.className='hand hour';
+  const min =document.createElement('div'); min.className='hand min';
+  const pivot=document.createElement('div'); pivot.className='pivot';
+  root.append(hour,min,pivot);
+  window.addEventListener('resize', ()=>placeTicks(root));
+
+  const fb=document.getElementById('pFeedback');
+  const enableBtn=document.getElementById('pEnableAudio');
+  const replayBtn=document.getElementById('pReplay');
+  const audio=new Audio();
+
+  function tryPlay(reset=false){
+    if(reset) audio.currentTime = 0;
+    enableBtn.style.display='none';
+    const p = audio.play();
+    if(p && typeof p.then==='function'){
+      p.then(()=>{ replayBtn.disabled = false; }).catch(()=>{ enableBtn.style.display='inline-block'; });
+    }else{ replayBtn.disabled=false; }
+  }
+
+  function load(i){
+    if(i>=items.length){ // end
+      fb.textContent = 'Alles fäerdeg – top!';
+      replayBtn.disabled = true;
+      document.getElementById('pValidate').disabled = true;
+      return;
+    }
+    const it=items[i];
+    setHand(min,0); setHand(hour,0);
+    min.dataset.target = (it.m*6);
+    hour.dataset.target = ((it.h%12)*30 + it.m*0.5);
+    audio.src = it.audio;
+    replayBtn.disabled = true;
+    fb.textContent = '';
+    audio.oncanplay = ()=>{ replayBtn.disabled = false; audio.oncanplay = null; };
+    tryPlay();
+  }
+
+  enableBtn.addEventListener('click', ()=>tryPlay(false));
+  replayBtn.addEventListener('click', ()=>tryPlay(true));
+
+  function smallest(a,b){ let d=Math.abs(a-b)%360; return d>180?360-d:d }
+  const MIN_TOL=9, HOUR_TOL=7;
+
+  function drag(el){
+    let on=false;
+    const start=e=>{ if(e.target!==el) return; on=true; e.preventDefault(); }
+    const move=e=>{ if(!on) return; const d=degFromPointer(e, root); setHand(el,d); }
+    const end =()=>{ on=false; };
+    el.addEventListener('mousedown',start);
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',end);
+    el.addEventListener('touchstart',start,{passive:false});
+    window.addEventListener('touchmove',move,{passive:false});
+    window.addEventListener('touchend',end);
+  }
+  drag(min); drag(hour);
+
+  document.getElementById('pValidate').addEventListener('click', ()=>{
+    if(idx>=items.length) return;
+    const mDeg=parseFloat(min.dataset.deg||0), hDeg=parseFloat(hour.dataset.deg||0);
+    const mt=parseFloat(min.dataset.target),   ht=parseFloat(hour.dataset.target);
+    const okM = smallest(mDeg, mt) <= MIN_TOL;
+    const okH = smallest(hDeg, ht) <= HOUR_TOL;
+    fb.textContent = (okM && okH) ? 'Richteg!' : 'Nach eng Kéier!';
+    if(okM && okH){ setTimeout(()=>{ idx++; load(idx); }, 700); }
+  });
+
+  load(idx);
+})();
+
+/* ---------- 2) Quiz (10 new quarter + 10 existing) ---------- */
+(function(){
+  const quizData = [
+    // NEW – Véierel op / vir
+    { h:10, m:15, opts:["Et ass Véierel op zéng.","Et ass hallwer zéng.","Et ass Véierel vir zéng."], correct:0 },
+    { h:8,  m:15, opts:["Et ass Véierel op aacht.","Et ass aacht drësseg.","Et ass Véierel vir aacht."], correct:0 },
+    { h:5,  m:15, opts:["Et ass Véierel op fënnef.","Et ass Véierel vir sechs.","Et ass fënnef Auer."], correct:0 },
+    { h:12, m:15, opts:["Et ass Véierel op zwielef.","Et ass zwielef Auer.","Et ass hallwer eent."], correct:0 },
+    { h:2,  m:45, opts:["Et ass Véierel vir dräi.","Et ass dräi Auer.","Et ass Véierel op dräi."], correct:0 },
+    { h:6,  m:45, opts:["Et ass Véierel vir siwen.","Et ass hallwer siwen.","Et ass siwen drësseg."], correct:0 },
+    { h:9,  m:45, opts:["Et ass Véierel vir zéng.","Et ass zéng Auer.","Et ass Véierel op néng."], correct:0 },
+    { h:11, m:45, opts:["Et ass Véierel vir zwielef.","Et ass zwielef Auer.","Et ass Véierel op zwielef."], correct:0 },
+    { h:3,  m:15, opts:["Et ass Véierel op dräi.","Et ass hallwer véier.","Et ass Véierel vir dräi."], correct:0 },
+    { h:7,  m:45, opts:["Et ass Véierel vir aacht.","Et ass Véierel op aacht.","Et ass hallwer aacht."], correct:0 },
+
+    // EXISTING – 5 voll
+    { h:12, m:0,  opts:["Et ass zwielef.","Et ass zwielef Auer.","Et ass Auer zwielef."], correct:1 },
+    { h:10, m:0,  opts:["Et ass zéng Auer.","Et ass Auer zéng.","Et ass zéng."], correct:0 },
+    { h:4,  m:0,  opts:["Et ass véier.","Et ass véier Auer.","Et ass Auer véier."], correct:1 },
+    { h:9,  m:0,  opts:["Et ass néng Auer.","Et ass Auer néng.","Et ass néng."], correct:0 },
+    { h:1,  m:0,  opts:["Et ass eent Auer.","Et ass een Auer.","Et ass eng Auer."], correct:2 },
+
+    // EXISTING – 5 hallwer
+    { h:9,  m:30, opts:["Et ass néng drësseg.","Et ass hallwer zéng.","Et ass hallwer néng."], correct:1 },
+    { h:10, m:30, opts:["Et ass zéng drësseg.","Et ass sechs Auer.","Et ass hallwer eelef."], correct:2 },
+    { h:3,  m:30, opts:["Et ass hallwer fënnef.","Et ass hallwer véier.","Et ass véier hallwer."], correct:1 },
+    { h:5,  m:30, opts:["Et ass hallwer sechs.","Et ass fënnef hallwer.","Et ass hallwer op fënnef."], correct:0 },
+    { h:6,  m:30, opts:["Et ass hallwer siwen.","Et ass hallwer sechs.","Et ass hallwer aacht."], correct:0 },
+  ];
+
+  let order=[...quizData.keys()];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  shuffle(order);
+  let qIndex = 0;
+
+  const root=document.getElementById('c3');
+  placeTicks(root);
+  const hour=document.createElement('div'); hour.className='hand hour';
+  const min =document.createElement('div'); min.className='hand min';
+  const pivot=document.createElement('div'); pivot.className='pivot';
+  root.append(hour,min,pivot);
+  window.addEventListener('resize', ()=>placeTicks(root));
+
+  const optsEl = document.getElementById('quizOptions');
+  const retryBtn = document.getElementById('quizRetry');
+  const nextBtn  = document.getElementById('quizNext');
+  const feedback = document.getElementById('quizFeedback');
+  const endMsg = document.getElementById('quizEnd');
+
+  function setClock(h,m){
+    setHand(min, m*6);
+    setHand(hour, (h%12)*30 + m*0.5);
+  }
+  function renderQuestion(i){
+    if(i>=order.length){
+      optsEl.innerHTML=''; feedback.textContent=''; retryBtn.disabled=true; nextBtn.disabled=true;
+      endMsg.style.display='block'; return;
+    }
+    endMsg.style.display='none';
+    const q = quizData[order[i]];
+    setClock(q.h, q.m);
+    optsEl.innerHTML = '';
+    feedback.textContent = '';
+    retryBtn.disabled = true;
+    nextBtn.disabled = true;
+    q.opts.forEach((text, idx)=>{
+      const b=document.createElement('button');
+      b.className='btn opt-btn';
+      b.textContent=text;
+      b.addEventListener('click', ()=>{
+        [...optsEl.children].forEach(btn=>btn.disabled=true);
+        if(idx===q.correct){
+          feedback.textContent='Richteg!';
+          nextBtn.disabled = false;
+        }else{
+          feedback.textContent='Probéier nach eemol';
+          retryBtn.disabled = false;
+          [...optsEl.children].forEach(btn=>btn.disabled=false);
+        }
+      });
+      optsEl.appendChild(b);
+    });
+  }
+  retryBtn.addEventListener('click', ()=>{
+    feedback.textContent = '';
+    retryBtn.disabled = true;
+  });
+  nextBtn.addEventListener('click', ()=>{
+    qIndex++;
+    renderQuestion(qIndex);
+  });
+
+  renderQuestion(qIndex);
+})();
+
+/* ---------- 3) Schreif (keyboard + two levels) ---------- */
+(function(){
+  // 10 prompts (5x Véierel op, 5x Véierel vir). Keep answers as strings to type.
+  const prompts = [
+    {h:10,m:15, ans:"Véierel op zéng"},
+    {h:8, m:15, ans:"Véierel op aacht"},
+    {h:5, m:15, ans:"Véierel op fënnef"},
+    {h:12,m:15, ans:"Véierel op zwielef"},
+    {h:3, m:15, ans:"Véierel op dräi"},
+    {h:2, m:45, ans:"Véierel vir dräi"},
+    {h:6, m:45, ans:"Véierel vir siwen"},
+    {h:9, m:45, ans:"Véierel vir zéng"},
+    {h:11,m:45, ans:"Véierel vir zwielef"},
+    {h:7, m:45, ans:"Véierel vir aacht"},
+  ];
+  let order=[...prompts.keys()];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  shuffle(order);
+  let idx=0;
+
+  const root=document.getElementById('c4');
+  placeTicks(root);
+  const hour=document.createElement('div'); hour.className='hand hour';
+  const min =document.createElement('div'); min.className='hand min';
+  const pivot=document.createElement('div'); pivot.className='pivot';
+  root.append(hour,min,pivot);
+  window.addEventListener('resize', ()=>placeTicks(root));
+
+  const typed = document.getElementById('typed');
+  const fb = document.getElementById('wFb');
+  const checkBtn = document.getElementById('wCheck');
+  const nextBtn = document.getElementById('wNext');
+  const hint = document.getElementById('writeHint');
+  const endMsg = document.getElementById('writeEnd');
+
+  // level toggle
+  let level='easy';
+  const tog = document.getElementById('lvlToggle');
+  [...tog.children].forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      [...tog.children].forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on');
+      level = btn.dataset.lvl==='hard' ? 'hard' : 'easy';
+      showHint();
+    });
+  });
+
+  function setClock(h,m){
+    setHand(min, m*6);
+    setHand(hour, (h%12)*30 + m*0.5);
+  }
+
+  function render(i){
+    if(i>=order.length){
+      fb.textContent=''; checkBtn.disabled=true; nextBtn.disabled=true; endMsg.style.display='block';
+      return;
+    }
+    endMsg.style.display='none';
+    const p = prompts[order[i]];
+    setClock(p.h, p.m);
+    typed.textContent='';
+    fb.textContent='';
+    nextBtn.disabled=true;
+    showHint();
+  }
+
+  function showHint(){
+    const p = prompts[order[idx]];
+    if(!p){ hint.textContent=''; return; }
+    if(level==='easy'){
+      // display required letters count
+      const len = p.ans.length;
+      hint.textContent = `Tipp: ${len} Zeechen (mat Leerzeechen)`;
+    }else{
+      hint.textContent = '';
+    }
+  }
+
+  // keyboard
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜÉÈËÂÎÔabcdefghijklmnopqrstuvwxyzäöüéèëâîô -'";
+  const keysRow = [...letters];
+  const kbd = document.getElementById('kbd');
+  function addKey(label, cls=''){
+    const b=document.createElement('div');
+    b.className='key'+(cls?(' '+cls):'');
+    b.textContent=label;
+    b.addEventListener('click', ()=> press(label));
+    kbd.appendChild(b);
+  }
+  let caps=false;
+  function press(label){
+    if(label==='⌫'){ typed.textContent = typed.textContent.slice(0,-1); return; }
+    if(label==='CAPS'){ caps=!caps; document.getElementById('capsKey').style.background = caps ? '#e8ddff' : '#fff'; return; }
+    const toAdd = caps ? label.toUpperCase() : label;
+    typed.textContent += toAdd;
+  }
+  // Build keyboard (Lux letters and space / dash / apostrophe)
+  const layout = ["V","é","i","e","r","e","l"," ","o","p"," ","v","i","r"," ","a","b","c","d","f","g","h","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","ä","ë","é","è","'","-"];
+  layout.forEach(ch=>addKey(ch));
+  const capsKey=document.createElement('div'); capsKey.className='key wide'; capsKey.id='capsKey'; capsKey.textContent='CAPS'; capsKey.addEventListener('click',()=>press('CAPS'));
+  kbd.appendChild(capsKey);
+  const bk=document.createElement('div'); bk.className='key wide'; bk.textContent='⌫'; bk.addEventListener('click',()=>press('⌫')); kbd.appendChild(bk);
+  const space=document.createElement('div'); space.className='key wide'; space.textContent=' '; space.addEventListener('click',()=>press(' ')); kbd.appendChild(space);
+
+  function normalize(s){ return s.replace(/\s+/g,' ').trim(); }
+  checkBtn.addEventListener('click', ()=>{
+    const want = prompts[order[idx]].ans;
+    const ok = normalize(typed.textContent).toLowerCase() === normalize(want).toLowerCase();
+    fb.textContent = ok ? 'Richteg!' : 'Nach eng Kéier!';
+    if(ok){ nextBtn.disabled=false; }
+  });
+  nextBtn.addEventListener('click', ()=>{ idx++; render(idx); });
+
+  render(idx);
+})();
+
+/* tabs */
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
